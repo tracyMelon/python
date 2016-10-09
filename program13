@@ -1,0 +1,25 @@
+#__author__ = 'tracyMelon'
+import urllib.request
+import urllib.parse
+import re
+
+class Spider:
+    def __init__(self):
+        self.requestURL = 'http://tieba.baidu.com/p/2166231880'
+        self.savecatalog = 'pictures/'
+    def getPage(self,page_num):
+        url = self.requestURL+'?pn=%s'%str(page_num)
+        request = urllib.request.Request(self.requestURL)
+        response = urllib.request.urlopen(request)
+        pagecode = response.read().decode('utf-8')
+        return pagecode
+    def catch_pic(self,page_num):
+        pagecode = self.getPage(page_num)
+        pattern = re.compile('<img pic_type="0.*?BDE_Image.*?src="(.*?)"')
+        items = re.findall(pattern,pagecode)
+        x=0
+        for item in items:
+            urllib.request.urlretrieve(item,self.savecatalog+'%s.jpg'%x)
+            x+=1
+Spider = Spider()
+Spider.catch_pic(1)
